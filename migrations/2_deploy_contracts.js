@@ -1,8 +1,8 @@
-var ConvertLib = artifacts.require("./ConvertLib.sol");
-var MetaCoin = artifacts.require("./MetaCoin.sol");
+var HDMDToken = artifacts.require("HDMDToken");
+var SafeMath = artifacts.require("SafeMath");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, MetaCoin);
-  deployer.deploy(MetaCoin);
+  deployer.deploy(SafeMath);
+  deployer.link(SafeMath, HDMDToken);
+  deployer.deploy(HDMDToken);
 };
