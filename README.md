@@ -1,3 +1,10 @@
+# Roadmap
+
+1. ERC20 Token
+1. Testing with Truffle
+1. Deploy on Main Block Net
+1. Testing with end-user apps like MetaMask or MEW.
+
 # Modify PoS Token smart contract to create MVP.
 
 Modify [PoS Token](https://etherscan.io/address/0xee609fe292128cad03b786dbb9bc2634ccdbe7fc#code) to create MVP.
