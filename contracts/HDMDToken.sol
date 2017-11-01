@@ -18,7 +18,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
 
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
-    uint public decimals = 18;
+    uint public decimals = 8;
 
     uint public totalSupply;
     uint public totalInitialSupply;
