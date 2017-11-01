@@ -31,7 +31,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     mapping(address => uint256) balances;
     mapping(address => mapping (address => uint256)) allowed;
     mapping(address => transferInStruct[]) transferIns;
-    mapping(address => boolean) allowedMinters;
+    mapping(address => bool) allowedMinters;
 
     event Burn(address indexed burner, uint256 value);
 
@@ -102,13 +102,13 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         return allowed[_owner][_spender];
     }
 
-    function allowMinter(address _minter) onlyOwner public return (bool) {
-        allowedMinters[address] = true;
+    function allowMinter(address _minter) onlyOwner public returns (bool) {
+        allowedMinters[_minter] = true;
         return true;
     }
     
-    function disallowMinter(address _minter) onlyOwner public return (bool) {
-        delete allowedMinters[address];
+    function disallowMinter(address _minter) onlyOwner public returns (bool) {
+        delete allowedMinters[_minter];
         return true;
     }
     
