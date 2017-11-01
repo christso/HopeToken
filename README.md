@@ -1,7 +1,7 @@
 # Roadmap
 
 1. ERC20 Token
-1. Testing with Truffle
+1. Testing with Truffle on Public Test Net
 1. Deploy on Main Block Net
 1. Testing with end-user apps like MetaMask or MEW.
 
