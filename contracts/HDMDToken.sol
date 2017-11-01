@@ -115,7 +115,6 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.
     function mint(uint256 _reward) onlyMinter public returns (bool) {
         if(balances[msg.sender] <= 0) return false;
-        if(transferIns[msg.sender].length <= 0) return false;
         if(_reward <= 0) return false;
 
         // increase total supply of coins in existence
