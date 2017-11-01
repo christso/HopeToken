@@ -18,7 +18,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
 
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
-    uint public decimals = 18;
+    uint public decimals = 8;
 
     uint public totalSupply;
     uint public totalInitialSupply;
@@ -31,6 +31,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     mapping(address => uint256) balances;
     mapping(address => mapping (address => uint256)) allowed;
     mapping(address => transferInStruct[]) transferIns;
+    mapping(address => boolean) allowedMinters;
 
     event Burn(address indexed burner, uint256 value);
 
@@ -43,7 +44,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     }
 
     modifier onlyMinter() {
-        // TODO: only allow addresses in the allowedMinters to mint
+        require(allowedMinters[msg.sender]);
         _;
     }
 
@@ -99,6 +100,16 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     // how much the spender can spend from the owner's address
     function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function allowMinter(address _minter) onlyOwner public return (bool) {
+        allowedMinters[address] = true;
+        return true;
+    }
+    
+    function disallowMinter(address _minter) onlyOwner public return (bool) {
+        delete allowedMinters[address];
+        return true;
     }
     
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.
