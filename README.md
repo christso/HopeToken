@@ -34,3 +34,16 @@ Test transfer tokens using end-user tools like MyEtherWallet or MetaMask, simila
 # Automation
 
 Create NodeJS app that watches the DMD blockchain, get the token balances in ETH addresses, mints the new coins (by invoking mint()) and sends them off using web3.
+
+# Truffle Commands
+
+```
+// save the contract instance to a variable
+HDMDToken.deployed().then(function(instance){hdmd=instance});
+
+// call the totalSupply contract variable and save the return value to a local variable
+hdmd.totalSupply.call().then(function(result) { totalSupply = result.toNumber(); });
+
+// display the value of totalSupply
+console.log(totalSupply);
+```
