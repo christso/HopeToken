@@ -4,6 +4,7 @@
 1. Testing with Truffle on Public Test Net
 1. Deploy on Main Block Net
 1. Testing with end-user apps like MetaMask or MEW.
+1. Create Docker container
 
 # Contract Behavior
 
