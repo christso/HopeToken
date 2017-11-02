@@ -18,7 +18,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
 
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
-    uint public decimals = 8;
+    uint public decimals = 8; // HDMD should have the same decimals as DMD
 
     uint public totalSupply;
     uint public totalInitialSupply;
@@ -33,6 +33,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     mapping(address => transferInStruct[]) transferIns; // TODO: remove to use less Gas?
     mapping(address => bool) allowedMinters;
 
+    // This notifies clients about the amount burnt
     event Burn(address indexed burner, bytes32 dmdAddress, uint256 value);
 
     /**
@@ -71,10 +72,24 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         return balances[_owner];
     }
 
-    function burnToken(uint _value, bytes32 _dmdAddress) public {
+    function burn(uint _value, bytes32 _dmdAddress) public returns (bool) {
         require(_value > 0);
+        balances[msg.sender] = balances[msg.sender].sub(_value);  // Subtract from the sender
+        totalSupply = totalSupply.sub(_value); // Updates totalSupply        
         Burn(msg.sender, _dmdAddress, _value);
+        return true;
     }
+
+    // TODO: how do we validate the dmd address, and is bytes32 the correct datatype?
+    function burnFrom(address _from, uint _value, bytes32 _dmdAddress) public returns (bool) {
+        require(_value > 0);
+        var _allowance = allowed[_from][msg.sender];
+
+        balances[_from] = balances[_from].sub(_value);  // subtract from the sender
+        allowed[_from][msg.sender] = _allowance.sub(_value); // subtract from the sender's allowance
+        totalSupply = totalSupply.sub(_value); // subtract from totalSupply
+        Burn(msg.sender, _dmdAddress, _value);
+    }    
 
     function transferFrom(address _from, address _to, uint256 _value) public onlyPayloadSize(3 * 32) returns (bool) {
         require(_to != address(0));

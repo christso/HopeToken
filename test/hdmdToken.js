@@ -87,7 +87,6 @@ contract('HDMDToken', function (accounts) {
         
     });
 
-    // TODO
     it("should be able to transfer from wallet if you are the owner", function () {
         var hdmd;
         var account_one = accounts[0];
@@ -123,12 +122,32 @@ contract('HDMDToken', function (accounts) {
 
     });
 
-    // TODO
+    // TODO: burn tokens
     it("should be able to burn tokens", function () {
+        var hdmd;
+        var burnValue = 100;
+        var totalInitialSupply;
+        var balanceOfBurner;
+        var initialBalanceOfBurner;
+
         return HDMDToken.deployed().then(function (instance) {
-            // call mint function
-        }).then(function (balance) {
-            // asset that supply remains the same
-        });
+            hdmd = instance;
+            return hdmd.totalSupply.call();
+        }).then(function(_totalInitialSupply) {
+            // get supply before burn
+            totalInitialSupply = _totalInitialSupply.toNumber();
+            
+            // burn HDMD and log DMD address
+            hdmd.burn(burnValue, "dbVtEGLTRYhStuL2rapCJS6yPusaWyuG5N");
+        }).then(function() {
+            // get total supply
+            return hdmd.totalSupply.call();
+        }).then(function(totalSupply) {
+            totalSupply = totalSupply.toNumber();
+            assert(totalSupply, totalInitialSupply - burnValue, 
+                "Total supply should have decreased by the amount burned.");
+        })
     });
+
+    // TODO: allocate tokens with batchTransfer
 });
