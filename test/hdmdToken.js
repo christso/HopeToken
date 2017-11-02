@@ -122,7 +122,6 @@ contract('HDMDToken', function (accounts) {
 
     });
 
-    // TODO: burn tokens
     it("should be able to burn tokens", function () {
         var hdmd;
         var burnValue = 100;
@@ -150,4 +149,20 @@ contract('HDMDToken', function (accounts) {
     });
 
     // TODO: allocate tokens with batchTransfer
+    it("should be able to allocate a batch of tokens", function() {
+        var hdmd;
+        var balances = [];
+        balances.length = accounts.length;
+        return HDMDToken.deployed().then(function (instance) {
+            hdmd = instance;
+            // get balances for each account
+            for (var i=0; i<accounts.length; i++) {
+                hdmd.balanceOf.call(accounts[i]).then(function(balance) {
+                    balances[i] = balance.toNumber();
+                })
+            }
+        }).then(function() {
+            
+        })
+    });
 });
