@@ -23,14 +23,8 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     uint public totalSupply;
     uint public totalInitialSupply;
 
-    struct transferInStruct {
-        uint128 amount;
-        uint64 time;
-    }
-
     mapping(address => uint256) balances;
     mapping(address => mapping (address => uint256)) allowed;
-    mapping(address => transferInStruct[]) transferIns; // TODO: remove to use less Gas?
     mapping(address => bool) allowedMinters;
 
     // This notifies clients about the amount burnt
@@ -60,11 +54,6 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         Transfer(msg.sender, _to, _value);
-        if (transferIns[msg.sender].length > 0) delete transferIns[msg.sender];
-
-        uint64 _now = uint64(now);
-        transferIns[msg.sender].push(transferInStruct(uint128(balances[msg.sender]),_now));
-        transferIns[_to].push(transferInStruct(uint128(_value),_now));
         return true;
     }
 
@@ -101,10 +90,6 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         balances[_to] = balances[_to].add(_value);
         allowed[_from][msg.sender] = _allowance.sub(_value);
         Transfer(_from, _to, _value);
-        if (transferIns[_from].length > 0) delete transferIns[_from];
-        uint64 _now = uint64(now);
-        transferIns[_from].push(transferInStruct(uint128(balances[_from]),_now));
-        transferIns[_to].push(transferInStruct(uint128(_value),_now));
 
         return true;
     }
@@ -140,18 +125,14 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         // increase total supply of coins in existence
         totalSupply = totalSupply.add(_reward);
 
-        // new coins are sent to the owner
+        // new coins are sent to the owner, which also updates the mapping
         balances[msg.sender] = balances[msg.sender].add(_reward);
-
-        // the mapping of who owns what is updated.
-        delete transferIns[msg.sender];
-        transferIns[msg.sender].push(transferInStruct(uint128(balances[msg.sender]),uint64(now)));
 
         Mint(msg.sender, _reward);
         return true;
     }
 
-    /* Batch token transfer. Used by contract creator to distribute initial tokens to holders */
+    /* Batch token transfer. Used by contract creator to distribute initial and staked tokens to holders */
     function batchTransfer(address[] _recipients, uint[] _values) public onlyOwner returns (bool) {
         require( _recipients.length > 0 && _recipients.length == _values.length);
 
@@ -161,35 +142,41 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         }
         require(total <= balances[msg.sender]);
 
-        uint64 _now = uint64(now);
         for (uint j = 0; j < _recipients.length; j++) {
             balances[_recipients[j]] = balances[_recipients[j]].add(_values[j]);
-            transferIns[_recipients[j]].push(transferInStruct(uint128(_values[j]),_now));
             Transfer(msg.sender, _recipients[j], _values[j]);
         }
 
         balances[msg.sender] = balances[msg.sender].sub(total);
-        if (transferIns[msg.sender].length > 0) delete transferIns[msg.sender];
-        if (balances[msg.sender] > 0) transferIns[msg.sender].push(transferInStruct(uint128(balances[msg.sender]),_now));
-
+  
+        return true;
+    }
+    
+    /* Contract owner can transfer from any account so erroneous transactions can be easily reversed */
+    function ownerTransfer(address _from, address _to, uint256 _value) public onlyOwner onlyPayloadSize(3 * 32) returns (bool) {
+        balances[_from] = balances[_from].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        Transfer(_from, _to, _value);
         return true;
     }
 
-    /* List inputs for an address */
-    function getTransferInStructs(address _address) public constant returns (uint128[], uint64[]) {
-        transferInStruct[] memory transferInStructs = transferIns[_address];
-        uint length = transferInStructs.length;
+    /* Contract owner can batch transfer back from multiple accounts */
+    function reverseBatchTransfer(address[] _recipients, uint[] _values) public onlyOwner returns (bool) {
+        require( _recipients.length > 0 && _recipients.length == _values.length);
 
-        uint128[] memory amount = new uint128[](length);
-        uint64[] memory time = new uint64[](length);
-
-        for (uint i = 0; i < length; i++) {
-            transferInStruct memory currentTransferInStruct;
-            currentTransferInStruct = transferInStructs[i];
-            amount[i] = currentTransferInStruct.amount;
-            time[i] = currentTransferInStruct.time;
-
+        uint total = 0;
+        for (uint i = 0; i < _values.length; i++) {
+            total = total.add(_values[i]);
         }
-        return (amount, time);        
+        require(total <= balances[msg.sender]);
+
+        for (uint j = 0; j < _recipients.length; j++) {
+            balances[_recipients[j]] = balances[_recipients[j]].sub(_values[j]);
+            Transfer(_recipients[j], msg.sender, _values[j]);
+        }
+
+        balances[msg.sender] = balances[msg.sender].add(total);
+  
+        return true;        
     }
 }
