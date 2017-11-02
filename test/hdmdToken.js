@@ -19,7 +19,7 @@ contract('HDMDToken', function (accounts) {
 
         return HDMDToken.deployed().then(function (instance) {
             hdmd = instance;
-            return hdmd.totalInitialSupply.call();
+            return hdmd.totalSupply.call();
         })
         .then(function(_totalInitialSupply) {
             totalInitialSupply = _totalInitialSupply.toNumber();
@@ -65,7 +65,7 @@ contract('HDMDToken', function (accounts) {
 
         return HDMDToken.deployed().then(function (instance) {
             hdmd = instance;
-            return hdmd.totalInitialSupply.call();
+            return hdmd.totalSupply.call();
         })
         .then(function(_totalInitialSupply) {
             totalInitialSupply = _totalInitialSupply.toNumber();
