@@ -6,20 +6,12 @@ import "../contracts/HDMDToken.sol";
 
 contract TestHDMDToken {
 
-  function testInitialBalanceUsingDeployedContract() {
-    HDMDToken hdmd = HDMDToken(DeployedAddresses.HDMDToken());
+    function testInitialBalanceUsingDeployedContract() {
+        HDMDToken hdmd = HDMDToken(DeployedAddresses.HDMDToken());
 
-    uint expected = 10000;
+        uint expected = 10000;
 
-    Assert.equal(hdmd.balanceOf(tx.origin), expected, "Owner should have 10000 HDMDToken initially");
-  }
-
-  function testInitialBalanceWithNewHDMDToken() {
-    HDMDToken hdmd = new HDMDToken();
-
-    uint expected = 10000;
-
-    Assert.equal(hdmd.balanceOf(tx.origin), expected, "Owner should have 10000 HDMDToken initially");
-  }
+        Assert.equal(hdmd.balanceOf(msg.sender), expected, "Owner should have 10000 HDMDToken initially");
+    }
 
 }

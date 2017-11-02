@@ -24,16 +24,16 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     uint public totalInitialSupply;
 
     struct transferInStruct {
-    uint128 amount;
-    uint64 time;
+        uint128 amount;
+        uint64 time;
     }
 
     mapping(address => uint256) balances;
     mapping(address => mapping (address => uint256)) allowed;
-    mapping(address => transferInStruct[]) transferIns;
+    mapping(address => transferInStruct[]) transferIns; // TODO: remove to use less Gas?
     mapping(address => bool) allowedMinters;
 
-    event Burn(address indexed burner, uint256 value);
+    event Burn(address indexed burner, bytes32 dmdAddress, uint256 value);
 
     /**
      * @dev Fix for the ERC20 short address attack.
@@ -69,6 +69,11 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
 
     function balanceOf(address _owner) public constant returns (uint256 balance) {
         return balances[_owner];
+    }
+
+    function burnToken(uint _value, bytes32 _dmdAddress) public {
+        require(_value > 0);
+        Burn(msg.sender, _dmdAddress, _value);
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public onlyPayloadSize(3 * 32) returns (bool) {
