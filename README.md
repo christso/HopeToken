@@ -45,6 +45,7 @@ Create NodeJS app that watches the DMD blockchain, get the token balances in ETH
 
 # Truffle Commands
 
+Getting Started
 ```
 // save the contract instance to a variable
 HDMDToken.deployed().then(function(instance){hdmd=instance});
@@ -54,6 +55,16 @@ hdmd.totalSupply.call().then(function(result) { totalSupply = result.toNumber();
 
 // display the value of totalSupply
 console.log(totalSupply);
+```
+
+Batch Transfer
+```
+// Transfer $100 and $200 to accounts[1] and accounts[2] respectively
+var accounts = web3.eth.accounts;
+hdmd.batchTransfer([accounts[1],accounts[2]], [100,200])
+
+// check balance of accounts[1]
+hdmd.balanceOf(accounts[1]);
 ```
 
 # Task List
