@@ -1,0 +1,26 @@
+{
+  "name": "hdmdtoken",
+  "version": "1.0.0",
+  "description": "This is the repo for the Hope Diamond Token.",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "set PORT=8080 && node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/christso/HDMDToken.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/christso/HDMDToken/issues"
+  },
+  "homepage": "https://gitlab.com/christso/HDMDToken#README",
+  "dependencies": {
+    "web3": "^0.20.0"
+  }
+}
