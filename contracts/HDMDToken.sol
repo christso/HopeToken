@@ -19,6 +19,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
     uint public decimals = 8; // HDMD should have the same decimals as DMD
+    string public version = "0.1";
 
     uint public totalSupply;
     uint public totalInitialSupply;
@@ -115,6 +116,10 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     function disallowMinter(address _minter) onlyOwner public returns (bool) {
         delete allowedMinters[_minter];
         return true;
+    }
+
+    function canMint(address _minter) public constant returns (bool) {
+        return allowedMinters[_minter];
     }
     
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.

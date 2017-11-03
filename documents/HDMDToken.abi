@@ -106,6 +106,19 @@
     },
     {
       "constant": true,
+      "inputs": [],
+      "name": "version",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
           "name": "_owner",
@@ -341,6 +354,24 @@
       "constant": true,
       "inputs": [
         {
+          "name": "_minter",
+          "type": "address"
+        }
+      ],
+      "name": "canMint",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
           "name": "_owner",
           "type": "address"
         },
@@ -460,4 +491,4 @@
       "name": "Transfer",
       "type": "event"
     }
-]
+  ]

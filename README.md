@@ -58,7 +58,3 @@ console.log(totalSupply);
 ### Deploy Contract
 
 - [x] Deploy on Rinkeby Test Net
-
-### Create Link Between DMD Blockchain and HDMD Token
-
-- [x] Create web3 listener on HDMD Token
