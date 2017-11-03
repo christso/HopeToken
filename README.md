@@ -1,3 +1,10 @@
+# Introduction
+
+This is the repo for the Hope Diamond Token.
+
+This smart contract has been deployed here:
+https://rinkeby.etherscan.io/address/0x4ec0260dab5c3d45791f480267a8fc003950e5f7
+
 # Roadmap
 
 1. ERC20 Token
