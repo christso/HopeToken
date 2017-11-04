@@ -69,10 +69,8 @@ hdmd.balanceOf(accounts[1]);
 
 # Task List
 
-### Create Contract Functions
-
-- [ ] show what addresses are allowed to mint
-
 ### Deploy Contract
 
 - [x] Deploy on Rinkeby Test Net
+- [ ] Deploy on Main Net
+- [ ] Verify contract on EtherScan
