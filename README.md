@@ -67,6 +67,15 @@ hdmd.batchTransfer([accounts[1],accounts[2]], [100,200])
 hdmd.balanceOf(accounts[1]);
 ```
 
+Minting
+```
+// Grant permissions for account[0] to mint
+hdmd.allowMinter(accounts[0]);
+
+// Mint 100 coins
+hdmd.mint(100)
+```
+
 # Task List
 
 ### Deploy Contract
