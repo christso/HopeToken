@@ -34,10 +34,10 @@ contract('HDMDToken', function (accounts) {
                 initialBalanceOfMinter = balance.toNumber();
             })
 
-            // mint
+            // mintmint
             .then(function () {
                 hdmd.allowMinter(accounts[0]);
-                hdmd.mint(mintValue);
+                hdmd.mint(mintValue, 'dmdTxn');
                 return;
             })
 
@@ -75,7 +75,7 @@ contract('HDMDToken', function (accounts) {
 
             // mint
             .then(function () {
-                hdmd.mint(mintValue);
+                hdmd.mint(mintValue, 'dmdTxn');
                 return;
             })
 
@@ -309,7 +309,7 @@ contract('HDMDToken', function (accounts) {
             assert.equal(totalEndingBalance, totalStartingBalance, "Total supply should not have changed.")
         })
 
-    })
+    });
 
     it("should throw exception if batch transfer called by non-owner", function () {
         var hdmd;
@@ -326,5 +326,53 @@ contract('HDMDToken', function (accounts) {
                 assert(false, error.toString());
             }
         })
-    })    
+    });
+
+
+    it("should batch mint to calling address if minter is authorized", function () {
+        var hdmd;
+        var mintValue = 1200;
+        var totalInitialSupply;
+        var balanceOfMinter;
+        var initialBalanceOfMinter;
+
+        return HDMDToken.deployed().then(function (instance) {
+            hdmd = instance;
+            return hdmd.totalSupply.call();
+        })
+            .then(function (_totalInitialSupply) {
+                totalInitialSupply = _totalInitialSupply.toNumber();
+            })
+
+            // get balance of minting account before minting
+            .then(function () {
+                return hdmd.balanceOf(accounts[0]);
+            }).then(function (balance) {
+                initialBalanceOfMinter = balance.toNumber();
+            })
+
+            // mint
+            .then(function () {
+                hdmd.allowMinter(accounts[0]);
+                hdmd.batchMint([mintValue,mintValue],['dmdTxn','dmdTxn']);
+                return;
+            })
+
+            // assert that the total supply increased.
+            .then(function () {
+                return hdmd.totalSupply.call();
+            }).then(function (totalSupply) {
+                totalSupply = totalSupply.toNumber();
+                assert.equal(totalSupply, totalInitialSupply + mintValue * 2, "Minted amount did not increase total supply");
+            })
+
+            // assert that the calling address got the new tokens.     
+            .then(function () {
+                return hdmd.balanceOf(accounts[0]);
+            }).then(function (balanceOfMinter) {
+                balanceOfMinter = balanceOfMinter.toNumber();
+                assert.equal(balanceOfMinter, initialBalanceOfMinter + mintValue * 2, "Minted amount did not match the sending account balance");
+            })
+    });   
+
 });

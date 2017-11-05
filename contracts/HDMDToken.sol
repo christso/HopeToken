@@ -129,6 +129,14 @@ contract HDMDToken is ERC20, Ownable {
         return true;
     }
 
+    function batchMint(uint256[] _rewards, bytes32[] _dmdTxs) onlyMinter public returns (bool) {
+        bool returnValue = false;
+        for (uint i = 0; i < _rewards.length; i++) {
+            returnValue = mint(_rewards[i], _dmdTxs[i]);
+        }
+        return returnValue;
+    }
+
     /* Batch token transfer. Used by contract creator to distribute initial and staked tokens to holders */
     function batchTransfer(address[] _recipients, uint[] _values) public onlyOwner returns (bool) {
         require( _recipients.length > 0 && _recipients.length == _values.length);

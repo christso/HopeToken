@@ -83,3 +83,9 @@ hdmd.mint(100)
 - [x] Deploy on Rinkeby Test Net
 - [ ] Deploy on Main Net
 - [ ] Verify contract on EtherScan
+
+# Troubleshooting
+
+### When you've changed your source code, and do truffle migrate, you get message 'Network up to date'
+
+Solution: Run command `truffle migrate --reset`
