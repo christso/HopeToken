@@ -73,7 +73,7 @@ Minting
 hdmd.allowMinter(accounts[0]);
 
 // Mint 100 coins
-hdmd.mint(100)
+hdmd.mint(100, 'FAKE-DMD-TXN');
 ```
 
 # Task List
