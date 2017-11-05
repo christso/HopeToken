@@ -4,22 +4,13 @@ import "./ERC20.sol";
 import "./SafeMath.sol";
 import "./Ownable.sol";
 
-/**
- * @title PoSTokenStandard
- * @dev the interface of PoSTokenStandard
- */
-contract PoSTokenStandard {
-    function mint(uint256 _reward) public returns (bool);
-    event Mint(address indexed _address, uint _reward);
-}
-
-contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
+contract HDMDToken is ERC20, Ownable {
     using SafeMath for uint256;
 
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
     uint public decimals = 8; // HDMD should have the same decimals as DMD
-    string public version = "0.1";
+    string public version = "0.12";
 
     uint public totalSupply;
     uint public totalInitialSupply;
@@ -30,6 +21,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
 
     // This notifies clients about the amount burnt
     event Burn(address indexed burner, bytes32 dmdAddress, uint256 value);
+    event Mint(address indexed _address, uint _reward, bytes32 _dmdTx);
 
     /**
      * @dev Fix for the ERC20 short address attack.
@@ -123,7 +115,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     }
     
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.
-    function mint(uint256 _reward) onlyMinter public returns (bool) {
+    function mint(uint256 _reward, bytes32 _dmdTx) onlyMinter public returns (bool) {
         if(balances[msg.sender] <= 0) return false;
         if(_reward <= 0) return false;
 
@@ -133,7 +125,7 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         // new coins are sent to the owner, which also updates the mapping
         balances[msg.sender] = balances[msg.sender].add(_reward);
 
-        Mint(msg.sender, _reward);
+        Mint(msg.sender, _reward, _dmdTx);
         return true;
     }
 
