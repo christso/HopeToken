@@ -22,6 +22,7 @@ contract HDMDToken is ERC20, Ownable {
     // This notifies clients about the amount burnt
     event Burn(address indexed burner, bytes32 dmdAddress, uint256 value);
     event Mint(address indexed _address, uint _reward, bytes32 _dmdTx);
+    event Unmint(address indexed _address, uint _reward, bytes32 _dmdTx);
 
     /**
      * @dev Fix for the ERC20 short address attack.
@@ -116,17 +117,31 @@ contract HDMDToken is ERC20, Ownable {
     
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.
     function mint(uint256 _reward, bytes32 _dmdTx) onlyMinter public returns (bool) {
-        if(balances[msg.sender] <= 0) return false;
+        if(balances[owner] <= 0) return false;
         if(_reward <= 0) return false;
 
         // increase total supply of coins in existence
         totalSupply = totalSupply.add(_reward);
 
         // new coins are sent to the owner, which also updates the mapping
-        balances[msg.sender] = balances[msg.sender].add(_reward);
+        balances[owner] = balances[owner].add(_reward);
 
         Mint(msg.sender, _reward, _dmdTx);
         return true;
+    }
+
+    function unmint(uint256 _reward, bytes32 _dmdTx) onlyMinter public returns (bool) {
+        if(balances[owner] <= 0) return false;
+        if(_reward <= 0) return false;
+
+        // increase total supply of coins in existence
+        totalSupply = totalSupply.sub(_reward);
+
+        // new coins are sent to the owner, which also updates the mapping
+        balances[owner] = balances[owner].sub(_reward);
+        
+        Unmint(owner, _reward, _dmdTx);
+        return true;        
     }
 
     function batchMint(uint256[] _rewards, bytes32[] _dmdTxs) onlyMinter public returns (bool) {
