@@ -76,6 +76,12 @@ hdmd.allowMinter(accounts[0]);
 hdmd.mint(100, 'FAKE-DMD-TXN');
 ```
 
+Burning
+```
+// Redeem 100 DMD tokens into 'my-dmd-address'
+hdmd.burn(100, 'my-dmd-address')
+```
+
 # Task List
 
 ### Deploy Contract
