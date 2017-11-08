@@ -10,7 +10,7 @@ contract HDMDToken is ERC20, Ownable {
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
     uint public decimals = 8; // HDMD should have the same decimals as DMD
-    string public version = "0.13";
+    string public version = "0.14";
 
     uint public totalSupply;
     uint public totalInitialSupply;
@@ -38,7 +38,7 @@ contract HDMDToken is ERC20, Ownable {
     }
 
     function HDMDToken() public {
-        totalInitialSupply = 10000; // DMD masternode
+        totalInitialSupply = 10000 * 10**decimals; // each masternode contains 10k DMDs
 
         balances[msg.sender] = totalInitialSupply;
         totalSupply = totalInitialSupply;

@@ -4,11 +4,12 @@ var HDMDToken = artifacts.require("./HDMDToken.sol");
 
 contract('HDMDToken', function (accounts) {
 
-    it("should put 10000 HDMDToken in the first account", function () {
+    it("should put 10000 HDMD tokens in the first account", function () {
         return HDMDToken.deployed().then(function (instance) {
             return instance.balanceOf.call(accounts[0]);
         }).then(function (balance) {
-            assert.equal(balance.valueOf(), 10000, "10000 wasn't in the first account");
+            let decimals = 8;
+            assert.equal(balance.valueOf(), 10000 * 10**decimals, "10000 wasn't in the first account");
         });
     });
 
