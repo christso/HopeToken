@@ -61,7 +61,7 @@ Batch Transfer
 ```
 // Transfer $100 and $200 to accounts[1] and accounts[2] respectively
 var accounts = web3.eth.accounts;
-hdmd.batchTransfer([accounts[1],accounts[2]], [100,200])
+hdmd.batchTransfer([accounts[1],accounts[2],accounts[3]],[120000000000,100000000000,50000000000])
 
 // check balance of accounts[1]
 hdmd.balanceOf(accounts[1]);
