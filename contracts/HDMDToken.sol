@@ -10,7 +10,7 @@ contract HDMDToken is ERC20, Ownable {
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
     uint public decimals = 8; // HDMD should have the same decimals as DMD
-    string public version = "0.14";
+    string public version = "0.15";
 
     uint public totalSupply;
     uint public totalInitialSupply;
@@ -20,9 +20,9 @@ contract HDMDToken is ERC20, Ownable {
     mapping(address => bool) allowedMinters;
 
     // This notifies clients about the amount burnt
-    event Burn(address indexed burner, bytes32 dmdAddress, uint256 value);
-    event Mint(address indexed _address, uint _reward, bytes32 _dmdTx);
-    event Unmint(address indexed _address, uint _reward, bytes32 _dmdTx);
+    event Burn(address indexed burner, string dmdAddress, uint256 value);
+    event Mint(address indexed _address, uint _reward, string _dmdTx);
+    event Unmint(address indexed _address, uint _reward, string _dmdTx);
 
     /**
      * @dev Fix for the ERC20 short address attack.
@@ -55,7 +55,7 @@ contract HDMDToken is ERC20, Ownable {
         return balances[_owner];
     }
 
-    function burn(uint _value, bytes32 _dmdAddress) public returns (bool) {
+    function burn(uint _value, string _dmdAddress) public returns (bool) {
         require(_value > 0);
         balances[msg.sender] = balances[msg.sender].sub(_value);  // Subtract from the sender
         totalSupply = totalSupply.sub(_value); // Updates totalSupply        
@@ -63,8 +63,8 @@ contract HDMDToken is ERC20, Ownable {
         return true;
     }
 
-    // TODO: how do we validate the dmd address, and is bytes32 the correct datatype?
-    function burnFrom(address _from, uint _value, bytes32 _dmdAddress) public returns (bool) {
+    // TODO: use bytes32 instead of string?
+    function burnFrom(address _from, uint _value, string _dmdAddress) public returns (bool) {
         require(_value > 0);
         var _allowance = allowed[_from][msg.sender];
 
@@ -116,7 +116,7 @@ contract HDMDToken is ERC20, Ownable {
     }
     
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.
-    function mint(uint256 _reward, bytes32 _dmdTx) onlyMinter public returns (bool) {
+    function mint(uint256 _reward, string _dmdTx) onlyMinter public returns (bool) {
         if(balances[owner] <= 0) return false;
         if(_reward <= 0) return false;
 
@@ -130,7 +130,7 @@ contract HDMDToken is ERC20, Ownable {
         return true;
     }
 
-    function unmint(uint256 _reward, bytes32 _dmdTx) onlyMinter public returns (bool) {
+    function unmint(uint256 _reward, string _dmdTx) onlyMinter public returns (bool) {
         if(balances[owner] <= 0) return false;
         if(_reward <= 0) return false;
 
@@ -142,14 +142,6 @@ contract HDMDToken is ERC20, Ownable {
         
         Unmint(owner, _reward, _dmdTx);
         return true;        
-    }
-
-    function batchMint(uint256[] _rewards, bytes32[] _dmdTxs) onlyMinter public returns (bool) {
-        bool returnValue = false;
-        for (uint i = 0; i < _rewards.length; i++) {
-            returnValue = mint(_rewards[i], _dmdTxs[i]);
-        }
-        return returnValue;
     }
 
     /* Batch token transfer. Used by contract creator to distribute initial and staked tokens to holders */

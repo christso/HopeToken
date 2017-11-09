@@ -78,8 +78,8 @@ hdmd.mint(100, 'FAKE-DMD-TXN');
 
 Burning
 ```
-// Redeem 100 DMD tokens into 'my-dmd-address'
-hdmd.burn(100, 'my-dmd-address')
+// Redeem 100 DMD tokens into DMD address 'dQmpKBcneq1ZF27iuJsUm8dQ2QkUriKWy3'
+hdmd.burn(100, 'dQmpKBcneq1ZF27iuJsUm8dQ2QkUriKWy3')
 ```
 
 # Task List
