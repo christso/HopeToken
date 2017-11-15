@@ -118,6 +118,24 @@
       "type": "function"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_reward",
+          "type": "uint256"
+        }
+      ],
+      "name": "unmint",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
       "constant": true,
       "inputs": [
         {
@@ -158,6 +176,19 @@
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [],
+      "name": "maxMint",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
       "constant": false,
       "inputs": [
         {
@@ -170,28 +201,6 @@
         }
       ],
       "name": "burn",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_reward",
-          "type": "uint256"
-        },
-        {
-          "name": "_dmdTx",
-          "type": "string"
-        }
-      ],
-      "name": "mint",
       "outputs": [
         {
           "name": "",
@@ -310,19 +319,11 @@
       "constant": false,
       "inputs": [
         {
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "name": "_value",
+          "name": "_reward",
           "type": "uint256"
         }
       ],
-      "name": "ownerTransfer",
+      "name": "mint",
       "outputs": [
         {
           "name": "",
@@ -336,15 +337,19 @@
       "constant": false,
       "inputs": [
         {
-          "name": "_reward",
-          "type": "uint256"
+          "name": "_from",
+          "type": "address"
         },
         {
-          "name": "_dmdTx",
-          "type": "string"
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
         }
       ],
-      "name": "unmint",
+      "name": "ownerTransfer",
       "outputs": [
         {
           "name": "",
@@ -468,11 +473,6 @@
           "indexed": false,
           "name": "_reward",
           "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "_dmdTx",
-          "type": "string"
         }
       ],
       "name": "Mint",
@@ -490,11 +490,6 @@
           "indexed": false,
           "name": "_reward",
           "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "_dmdTx",
-          "type": "string"
         }
       ],
       "name": "Unmint",

@@ -10,10 +10,11 @@ contract HDMDToken is ERC20, Ownable {
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
     uint public decimals = 8; // HDMD should have the same decimals as DMD
-    string public version = "0.15";
+    string public version = "0.16";
 
     uint public totalSupply;
     uint public totalInitialSupply;
+    uint public maxMint;
 
     mapping(address => uint256) balances;
     mapping(address => mapping (address => uint256)) allowed;
@@ -21,8 +22,8 @@ contract HDMDToken is ERC20, Ownable {
 
     // This notifies clients about the amount burnt
     event Burn(address indexed burner, string dmdAddress, uint256 value);
-    event Mint(address indexed _address, uint _reward, string _dmdTx);
-    event Unmint(address indexed _address, uint _reward, string _dmdTx);
+    event Mint(address indexed _address, uint _reward);
+    event Unmint(address indexed _address, uint _reward);
 
     /**
      * @dev Fix for the ERC20 short address attack.
@@ -42,6 +43,7 @@ contract HDMDToken is ERC20, Ownable {
 
         balances[msg.sender] = totalInitialSupply;
         totalSupply = totalInitialSupply;
+        maxMint = totalInitialSupply * 10;
     }
 
     function transfer(address _to, uint256 _value) onlyPayloadSize(2 * 32) public returns (bool) {
@@ -116,9 +118,9 @@ contract HDMDToken is ERC20, Ownable {
     }
     
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.
-    function mint(uint256 _reward, string _dmdTx) onlyMinter public returns (bool) {
-        if(balances[owner] <= 0) return false;
+    function mint(uint256 _reward) onlyMinter public returns (bool) {
         if(_reward <= 0) return false;
+        if(_reward > maxMint) return false;
 
         // increase total supply of coins in existence
         totalSupply = totalSupply.add(_reward);
@@ -126,12 +128,11 @@ contract HDMDToken is ERC20, Ownable {
         // new coins are sent to the owner, which also updates the mapping
         balances[owner] = balances[owner].add(_reward);
 
-        Mint(msg.sender, _reward, _dmdTx);
+        Mint(msg.sender, _reward);
         return true;
     }
 
-    function unmint(uint256 _reward, string _dmdTx) onlyMinter public returns (bool) {
-        if(balances[owner] <= 0) return false;
+    function unmint(uint256 _reward) onlyMinter public returns (bool) {
         if(_reward <= 0) return false;
 
         // increase total supply of coins in existence
@@ -140,7 +141,7 @@ contract HDMDToken is ERC20, Ownable {
         // new coins are sent to the owner, which also updates the mapping
         balances[owner] = balances[owner].sub(_reward);
         
-        Unmint(owner, _reward, _dmdTx);
+        Unmint(msg.sender, _reward);
         return true;        
     }
 

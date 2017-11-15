@@ -33,16 +33,6 @@ Rectify scenario where an address with permission to mint has been compromised a
 * transfer back tokens so the transaction is reversed. This will undo the transfer() function.
 * burn tokens that should not have been minted.
 
-# Deployment
-
-Deploy onto Main Network using geth.
-
-Test transfer tokens using end-user tools like MyEtherWallet or MetaMask, similar to the workflow for the [COSS Token](https://coss.io/coss-token-based-fee-split-allocation-tutorial).
-
-# Automation
-
-Create NodeJS app that watches the DMD blockchain, get the token balances in ETH addresses, mints the new coins (by invoking mint()) and sends them off using web3.
-
 # Truffle Commands
 
 Getting Started
