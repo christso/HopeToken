@@ -63,7 +63,7 @@ Minting
 hdmd.allowMinter(accounts[0]);
 
 // Mint 100 coins
-hdmd.mint(100, 'FAKE-DMD-TXN');
+hdmd.mint(100);
 ```
 
 Burning

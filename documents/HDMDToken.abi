@@ -277,32 +277,6 @@
       "type": "function"
     },
     {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "name": "_value",
-          "type": "uint256"
-        },
-        {
-          "name": "_dmdAddress",
-          "type": "string"
-        }
-      ],
-      "name": "burnFrom",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
       "constant": true,
       "inputs": [],
       "name": "totalInitialSupply",

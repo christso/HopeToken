@@ -10,7 +10,7 @@ contract HDMDToken is ERC20, Ownable {
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
     uint public decimals = 8; // HDMD should have the same decimals as DMD
-    string public version = "0.16";
+    string public version = "0.17";
 
     uint public totalSupply;
     uint public totalInitialSupply;
@@ -64,17 +64,6 @@ contract HDMDToken is ERC20, Ownable {
         Burn(msg.sender, _dmdAddress, _value);
         return true;
     }
-
-    // TODO: use bytes32 instead of string?
-    function burnFrom(address _from, uint _value, string _dmdAddress) public returns (bool) {
-        require(_value > 0);
-        var _allowance = allowed[_from][msg.sender];
-
-        balances[_from] = balances[_from].sub(_value);  // subtract from the sender
-        allowed[_from][msg.sender] = _allowance.sub(_value); // subtract from the sender's allowance
-        totalSupply = totalSupply.sub(_value); // subtract from totalSupply
-        Burn(msg.sender, _dmdAddress, _value);
-    }    
 
     function transferFrom(address _from, address _to, uint256 _value) public onlyPayloadSize(3 * 32) returns (bool) {
         require(_to != address(0));
