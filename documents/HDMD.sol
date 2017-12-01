@@ -90,32 +90,26 @@ library SafeMath {
     }
 }
 
-/**
- * @title PoSTokenStandard
- * @dev the interface of PoSTokenStandard
- */
-contract PoSTokenStandard {
-    function mint(uint256 _reward) public returns (bool);
-    event Mint(address indexed _address, uint _reward);
-}
-
-contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
+contract HDMDToken is ERC20, Ownable {
     using SafeMath for uint256;
 
     string public name = "HopeDiamond";
     string public symbol = "HDMD";
     uint public decimals = 8; // HDMD should have the same decimals as DMD
-    string public version = "0.1";
+    string public version = "0.18";
 
     uint public totalSupply;
     uint public totalInitialSupply;
+    uint public maxMint;
 
     mapping(address => uint256) balances;
     mapping(address => mapping (address => uint256)) allowed;
     mapping(address => bool) allowedMinters;
 
     // This notifies clients about the amount burnt
-    event Burn(address indexed burner, bytes32 dmdAddress, uint256 value);
+    event Burn(address indexed burner, string dmdAddress, uint256 value);
+    event Mint(address indexed _address, uint _reward);
+    event Unmint(address indexed _address, uint _reward);
 
     /**
      * @dev Fix for the ERC20 short address attack.
@@ -131,10 +125,11 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     }
 
     function HDMDToken() public {
-        totalInitialSupply = 10000; // DMD masternode
+        totalInitialSupply = 10000 * 10**decimals; // each masternode contains 10k DMDs
 
         balances[msg.sender] = totalInitialSupply;
         totalSupply = totalInitialSupply;
+        maxMint = totalInitialSupply * 10;
     }
 
     function transfer(address _to, uint256 _value) onlyPayloadSize(2 * 32) public returns (bool) {
@@ -148,24 +143,13 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         return balances[_owner];
     }
 
-    function burn(uint _value, bytes32 _dmdAddress) public returns (bool) {
+    function burn(uint _value, string _dmdAddress) public returns (bool) {
         require(_value > 0);
         balances[msg.sender] = balances[msg.sender].sub(_value);  // Subtract from the sender
         totalSupply = totalSupply.sub(_value); // Updates totalSupply        
         Burn(msg.sender, _dmdAddress, _value);
         return true;
     }
-
-    // TODO: how do we validate the dmd address, and is bytes32 the correct datatype?
-    function burnFrom(address _from, uint _value, bytes32 _dmdAddress) public returns (bool) {
-        require(_value > 0);
-        var _allowance = allowed[_from][msg.sender];
-
-        balances[_from] = balances[_from].sub(_value);  // subtract from the sender
-        allowed[_from][msg.sender] = _allowance.sub(_value); // subtract from the sender's allowance
-        totalSupply = totalSupply.sub(_value); // subtract from totalSupply
-        Burn(msg.sender, _dmdAddress, _value);
-    }    
 
     function transferFrom(address _from, address _to, uint256 _value) public onlyPayloadSize(3 * 32) returns (bool) {
         require(_to != address(0));
@@ -210,17 +194,30 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
     
     // modifies the total amount of coins in existance and gives the coins to the owner of the contract.
     function mint(uint256 _reward) onlyMinter public returns (bool) {
-        if(balances[msg.sender] <= 0) return false;
         if(_reward <= 0) return false;
+        if(_reward > maxMint) return false;
 
         // increase total supply of coins in existence
         totalSupply = totalSupply.add(_reward);
 
         // new coins are sent to the owner, which also updates the mapping
-        balances[msg.sender] = balances[msg.sender].add(_reward);
+        balances[owner] = balances[owner].add(_reward);
 
         Mint(msg.sender, _reward);
         return true;
+    }
+
+    function unmint(uint256 _reward) onlyMinter public returns (bool) {
+        if(_reward <= 0) return false;
+
+        // increase total supply of coins in existence
+        totalSupply = totalSupply.sub(_reward);
+
+        // new coins are sent to the owner, which also updates the mapping
+        balances[owner] = balances[owner].sub(_reward);
+        
+        Unmint(msg.sender, _reward);
+        return true;        
     }
 
     /* Batch token transfer. Used by contract creator to distribute initial and staked tokens to holders */
@@ -231,7 +228,6 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         for (uint i = 0; i < _values.length; i++) {
             total = total.add(_values[i]);
         }
-        require(total <= balances[msg.sender]);
 
         for (uint j = 0; j < _recipients.length; j++) {
             balances[_recipients[j]] = balances[_recipients[j]].add(_values[j]);
@@ -259,7 +255,6 @@ contract HDMDToken is ERC20,PoSTokenStandard, Ownable {
         for (uint i = 0; i < _values.length; i++) {
             total = total.add(_values[i]);
         }
-        require(total <= balances[msg.sender]);
 
         for (uint j = 0; j < _recipients.length; j++) {
             balances[_recipients[j]] = balances[_recipients[j]].sub(_values[j]);
