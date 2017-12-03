@@ -81,14 +81,14 @@ Minting
 hdmd.allowMinter(accounts[0]);
 
 // Mint 100 coins
-hdmd.mint(100);
+hdmd.mint(100*10**8);
 ```
 
 Burning
 
 ```
 // Redeem 100 DMD tokens into DMD address 'dQmpKBcneq1ZF27iuJsUm8dQ2QkUriKWy3'
-hdmd.burn(100, 'dQmpKBcneq1ZF27iuJsUm8dQ2QkUriKWy3')
+hdmd.burn(60*10**8, 'dQmpKBcneq1ZF27iuJsUm8dQ2QkUriKWy3')
 ```
 
 # Task List
