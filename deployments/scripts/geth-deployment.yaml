@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: geth-service
+  labels:
+    name: geth
+spec:
+  ports:
+  - port: 30303
+    targetPort: 30303
+  clusterIP: None
+  selector:
+    role: geth
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hope-geth
+spec:
+  replicas: 1
+  minReadySeconds: 300
+  template:
+    metadata:
+      labels:
+        app: hope-geth
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - hope-geth
+                - key: name
+                  operator: In
+                  values:
+                  - geth
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: hope-geth
+        ports:
+        - containerPort: 30303
+          name: geth
+        image: oxxygen/geth-1.7.3-rinkeby-cloud
+        imagePullPolicy: Always
+        command: ["sh", "-c", "geth --networkid=4 --datadir=$HOME/.rinkeby --rpcaddr 0.0.0.0 --syncmode=fast --ethstats='Hope:Respect my authoritah!@stats.rinkeby.io' --bootnodes=enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc51296ff084b770b94fb9028c4d25ccf@52.169.42.101:30303?"]
+        volumeMounts:
+        - name: geth-storage
+          mountPath: /root/.rinkeby
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /etc/localtime
+      - name: geth-storage
+        persistentVolumeClaim:
+          claimName: geth-pv-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: geth-pv-claim
+spec:
+  storageClassName: fast
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
